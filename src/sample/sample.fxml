@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+  <children>
+    <MenuBar prefHeight="25.0" prefWidth="289.0" VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#addURL" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <Button fx:id="btnRastrear" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#iniciarRastreamento" text="Iniciar" />
+            <Button fx:id="btnParar" layoutX="74.0" layoutY="14.0" mnemonicParsing="false" onAction="#pararRastreamento" text="Parar" />
+            <TableView fx:id="tableFilhos" layoutX="19.0" layoutY="44.0" onMouseClicked="#clickItem" prefHeight="318.0" prefWidth="599.0">
+              <columns>
+                <TableColumn fx:id="colSite" editable="false" prefWidth="477.0" text="Site" />
+                <TableColumn fx:id="colFilhos" minWidth="0.0" prefWidth="121.0" text="Filhos" />
+              </columns>
+            </TableView>
+            <Button fx:id="closeButton" defaultButton="true" layoutX="567.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeButtonAction" text="Fechar" textAlignment="CENTER" />
+            <Button layoutX="505.0" layoutY="14.0" mnemonicParsing="false" onAction="#atualizarAncestrais" text="Atualizar" />
+            <Label fx:id="labelStatus" layoutX="270.0" layoutY="18.0" text="O bot está parado!" />
+            <Button id="backButton" fx:id="backButton" disable="true" layoutX="457.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#clickButtonBack" text="Voltar" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
