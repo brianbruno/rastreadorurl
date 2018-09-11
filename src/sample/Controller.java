@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import util.ScreenService;
 
 import javax.swing.*;
 import javax.xml.crypto.Data;
@@ -31,7 +32,7 @@ public class Controller implements Initializable {
 
     private static ArrayList<Bot> bots;
     private static List<String> listaCodigos;
-    private static final int THREADS = 8;
+    private static final int THREADS = 2;
     private RequestManagement rm;
     private ConnectionController conn;
     @FXML
@@ -57,15 +58,7 @@ public class Controller implements Initializable {
         conn = connectionParameters.startConnection();
 
         if (conn == null) {
-            // create a jframe
-            JFrame frame = new JFrame("Erro");
-
-            // show a joptionpane dialog using showMessageDialog
-            JOptionPane.showMessageDialog(frame,
-                    "Dados de conexão incorretos",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-
+            ScreenService.showErrorMessage("Dados de conexão incorretos");
             System.exit(0);
         }
 
@@ -203,7 +196,7 @@ public class Controller implements Initializable {
             Request rq = new Request();
             rq.setLink(url_add);
             rq.setOrigem(null);
-            conn.addURL(rq);
+            conn.insertURL(rq);
             atualizarAncestrais();
         }
     }

@@ -6,6 +6,7 @@ import componentes.Request;
 import core.RequestManagement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import util.ScreenService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ConnectionController {
             String sql = "INSERT INTO url (URL, ID_ORIGEM) VALUES (?, ?)";
 
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, request.getLink());
+            statement.setLong(1, getIdUrl(request.getLink()));
             statement.setString(2, request.getOrigem());
             statement.executeUpdate();
 
@@ -50,6 +51,7 @@ public class ConnectionController {
             String log = "Registro duplicado: " + request.getLink() + ArquivoRequest.SEPARATOR;
             RequestManagement.gravarLog(log);
         } catch (SQLException ex) {
+            ScreenService.showErrorMessage(ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -78,8 +80,41 @@ public class ConnectionController {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
+            ScreenService.showErrorMessage(ex.getMessage());
             System.err.println("Erro ao adicionar registro como visitado.");
         }
+    }
+
+    public long getIdUrl(String url) {
+        long idUrl = 0;
+
+        try {
+            String sql = "SELECT l.ID FROM links l WHERE l.URL = ? LIMIT 1";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, url);
+            ResultSet result;
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                idUrl = result.getLong("ID");
+            } else {
+                statement = conn.prepareStatement("INSERT INTO links (URL) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                statement.setString(1, url);
+                statement.executeUpdate();
+
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        idUrl = generatedKeys.getLong(1);
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            ScreenService.showErrorMessage(ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return idUrl;
     }
 
     public ArrayList<Request> getURLS() {

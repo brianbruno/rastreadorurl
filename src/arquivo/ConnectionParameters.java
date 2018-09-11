@@ -1,6 +1,5 @@
 package arquivo;
 
-import componentes.Request;
 import database.ConnectionController;
 import javafx.scene.control.TextInputDialog;
 
@@ -8,7 +7,7 @@ import java.io.*;
 
 public class ConnectionParameters extends ArquivoUtil{
 
-    private String arquivo = "rastreador.configa";
+    private String arquivo = "rastreador.config";
     private int tentativas = 0;
 
     public ConnectionController startConnection() {
