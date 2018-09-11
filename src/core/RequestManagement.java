@@ -2,6 +2,7 @@ package core;
 
 import arquivo.ArquivoRequest;
 import arquivo.ArquivoAncestrais;
+import arquivo.ConnectionParameters;
 import componentes.Ancestral;
 import componentes.Request;
 import database.ConnectionController;
@@ -16,9 +17,10 @@ public class RequestManagement {
     private static boolean rodar = true;
     private boolean botOcioso = false;
     private static ArquivoManagement am = new ArquivoManagement();
-    private ConnectionController conn = new ConnectionController();
+    private ConnectionController conn;
 
     public RequestManagement() {
+        conn = new ConnectionParameters().startConnection();
         this.saveLinks = new ArrayList<>();
         this.links = new ArrayList<>();
     }
@@ -67,8 +69,11 @@ public class RequestManagement {
         Request rq = new Request();
         rq.setLink(url);
         rq.setOrigem(origem);
-        if (conn.uniqueUrl(rq.getLink()))
-            conn.addURL(rq);
+        conn.addURL(rq);
+    }
+
+    public void salvarUrls() {
+        conn.salvarURLS();
     }
 
     public void setVisitado(Request rq) {

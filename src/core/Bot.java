@@ -117,4 +117,8 @@ public class Bot extends Thread {
     public static void setBots(int bots) {
         Bot.bots = bots;
     }
+
+    public RequestManagement getRequestManagement() {
+        return this.rm;
+    }
 }

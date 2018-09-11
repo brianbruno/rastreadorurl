@@ -12,23 +12,29 @@ import java.util.ArrayList;
 
 public class ConnectionController {
 
-    private static final String dbURL = "jdbc:mysql://162.221.187.66:3306/brianpl1_rastreador";
-    private static final String username = "brianpl1";
-    private static final String password = "7Kj853bpLj";
+    private String dbURL = "jdbc:mysql://162.221.187.66:3306/brianpl1_rastreador";
+    private String username = "brianpl1";
+    private String password = "7Kj853bpLj";
+    private static final int INSERT_SIZE = 100;
     private static Connection conn;
     private static ArrayList<Request> urls = new ArrayList<>();
 
-    public ConnectionController() {
-        conectar();
+    public ConnectionController(String dburl, String username, String password) {
+        this.dbURL = dburl;
+        this.username = username;
+        this.password = password;
     }
 
-    public void conectar() {
+    public boolean conectar() {
+        boolean resultado = false;
         try {
             conn = DriverManager.getConnection(dbURL, username, password);
             System.out.println("Conexão concluída com sucesso!");
+            resultado = true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return resultado;
     }
 
     public void insertURL(Request request) {
@@ -52,12 +58,12 @@ public class ConnectionController {
         if (!urls.contains(request))
             urls.add(request);
 
-        if (urls.size() >= 1000 || !RequestManagement.isRodar()) {
+        if (urls.size() >= INSERT_SIZE || !RequestManagement.isRodar()) {
             salvarURLS();
         }
     }
 
-    public void salvarURLS() {
+    public synchronized void salvarURLS() {
         int tamanho = urls.size();
 //        System.out.println("Salvando URLS! " + urls.size());
         for (int i = 0; i < tamanho; i++) {
@@ -79,7 +85,7 @@ public class ConnectionController {
     public ArrayList<Request> getURLS() {
         ArrayList<Request> requests = new ArrayList<>();
         try {
-            String sql = "SELECT ID, URL, ID_ORIGEM FROM url WHERE ID NOT IN (SELECT ID_URL FROM visitas) ORDER BY rand() LIMIT 100";
+            String sql = "SELECT ID, URL, ID_ORIGEM FROM url_pendente";
 
             Statement statement = conn.createStatement();
             ResultSet result;
@@ -103,8 +109,6 @@ public class ConnectionController {
         }
         return requests;
     }
-
-
 
     public ObservableList<Request> getArvore(PreparedStatement statement) {
 
@@ -137,7 +141,7 @@ public class ConnectionController {
     public ObservableList<Request> getArvore() {
         ObservableList<Request> requests = null;
         try {
-            String sql = "SELECT u.ID, u.URL, COUNT(x.ID_ORIGEM) AS FILHOS, (CASE WHEN (COUNT(v.ID) > 0) THEN 'S' ELSE 'N' END) AS VISITA FROM url u LEFT JOIN url x ON x.ID_ORIGEM = u.ID LEFT JOIN visitas v ON v.ID_URL = u.ID WHERE u.ID_ORIGEM IS NULL GROUP BY u.ID ORDER BY u.ID";
+            String sql = "SELECT u.ID, l.URL, COUNT(x.ID_ORIGEM) AS FILHOS, (CASE WHEN (COUNT(v.ID) > 0) THEN 'S' ELSE 'N' END) AS VISITA FROM url u JOIN links l ON u.URL =  l.ID LEFT JOIN url x ON x.ID_ORIGEM = u.ID LEFT JOIN visitas v ON v.ID_URL = u.ID WHERE u.ID_ORIGEM IS NULL GROUP BY u.ID ORDER BY u.ID";
             PreparedStatement statement = conn.prepareStatement(sql);
             requests = getArvore(statement);
         } catch (Exception ex) {
@@ -157,7 +161,7 @@ public class ConnectionController {
             result.next();
             int valor = result.getInt("QTDE");
 
-            if(valor > 0) {
+            if(valor == 0) {
                 resultado = true;
             }
         } catch (Exception ex) {
@@ -169,7 +173,7 @@ public class ConnectionController {
     public ObservableList<Request> getCodigo(String codigo) {
         ObservableList<Request> requests = null;
         try {
-            String sql = "SELECT u.ID, u.URL, COUNT(x.ID_ORIGEM) AS FILHOS, (CASE WHEN (COUNT(v.ID) > 0) THEN 'S' ELSE 'N' END) AS VISITA FROM url u LEFT JOIN url x ON x.ID_ORIGEM = u.ID LEFT JOIN visitas v ON v.ID_URL = u.ID WHERE u.ID_ORIGEM = ? GROUP BY u.ID ORDER BY u.ID";
+            String sql = "SELECT u.ID, l.URL, COUNT(x.ID_ORIGEM) AS FILHOS, (CASE WHEN (COUNT(v.ID) > 0) THEN 'S' ELSE 'N' END) AS VISITA FROM url u JOIN links l ON u.URL =  l.ID LEFT JOIN url x ON x.ID_ORIGEM = u.ID LEFT JOIN visitas v ON v.ID_URL = u.ID WHERE u.ID_ORIGEM = ? GROUP BY u.ID ORDER BY u.ID";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, codigo);
             requests = getArvore(statement);

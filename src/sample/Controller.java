@@ -1,5 +1,6 @@
 package sample;
 
+import arquivo.ConnectionParameters;
 import componentes.Ancestral;
 import componentes.Request;
 import core.ArquivoManagement;
@@ -30,9 +31,9 @@ public class Controller implements Initializable {
 
     private static ArrayList<Bot> bots;
     private static List<String> listaCodigos;
-    private static final int THREADS = 2;
-    private RequestManagement rm = new RequestManagement();
-    private ConnectionController conn = new ConnectionController();
+    private static final int THREADS = 8;
+    private RequestManagement rm;
+    private ConnectionController conn;
     @FXML
     private TableView tableFilhos;
     @FXML
@@ -51,6 +52,25 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        ConnectionParameters connectionParameters = new ConnectionParameters();
+        conn = connectionParameters.startConnection();
+
+        if (conn == null) {
+            // create a jframe
+            JFrame frame = new JFrame("Erro");
+
+            // show a joptionpane dialog using showMessageDialog
+            JOptionPane.showMessageDialog(frame,
+                    "Dados de conexão incorretos",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+
+            System.exit(0);
+        }
+
+        rm = new RequestManagement();
+
         listaCodigos = new ArrayList<>();
         colSite.setCellValueFactory(
                 new PropertyValueFactory<>("link"));
