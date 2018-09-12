@@ -62,7 +62,7 @@ public class Controller implements Initializable {
             System.exit(0);
         }
 
-        rm = new RequestManagement();
+        rm = new RequestManagement(conn);
 
         listaCodigos = new ArrayList<>();
         colSite.setCellValueFactory(
@@ -138,6 +138,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void closeButtonAction(){
+//        rm.desconectar();
         // get a handle to the stage
         Stage stage = (Stage) closeButton.getScene().getWindow();
         // do what you have to do

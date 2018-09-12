@@ -25,6 +25,12 @@ public class RequestManagement {
         this.links = new ArrayList<>();
     }
 
+    public RequestManagement(ConnectionController conn) {
+        this.conn = conn;
+        this.saveLinks = new ArrayList<>();
+        this.links = new ArrayList<>();
+    }
+
     public synchronized Request getUrl() {
 
         Request request = null;
@@ -78,6 +84,10 @@ public class RequestManagement {
 
     public void setVisitado(Request rq) {
         conn.addVisita(rq);
+    }
+
+    public void desconectar() {
+        conn.desconectar();
     }
 
 }

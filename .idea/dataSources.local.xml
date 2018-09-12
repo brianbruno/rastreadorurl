@@ -2,7 +2,7 @@
 <project version="4">
   <component name="dataSourceStorageLocal">
     <data-source name="brianpla_rastreador@bdhost0043.servidorwebfacil.com" uuid="c0eeae5b-7aed-4979-ad9b-8e22dce02e8d">
-      <database-info product="MySQL" version="5.5.48-log" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e )" family="MYSQL" exact-version="5.5.48">
+      <database-info product="MySQL" version="5.5.48-log" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e )">
         <extra-name-characters>#@</extra-name-characters>
         <identifier-quote-string>`</identifier-quote-string>
       </database-info>
@@ -12,7 +12,7 @@
       <introspection-schemas>*:brianpla_rastreador</introspection-schemas>
     </data-source>
     <data-source name="brianpl1_rastreador@162.221.187.66" uuid="1abf6746-ac23-4375-912f-ef320f84fbce">
-      <database-info product="MySQL" version="5.5.5-10.1.34-MariaDB" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e )" family="MARIADB" exact-version="5.5.5">
+      <database-info product="MySQL" version="5.5.5-10.1.34-MariaDB" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.46 ( Revision: 9cc87a48e75c2d2e87c1a293b2862ce651cb256e )">
         <extra-name-characters>#@</extra-name-characters>
         <identifier-quote-string>`</identifier-quote-string>
       </database-info>
@@ -22,7 +22,7 @@
       <introspection-schemas>*:brianpl1_rastreador</introspection-schemas>
     </data-source>
     <data-source name="rastreador@localhost" uuid="431c20b4-ddf3-4998-bccf-499ca1fea84f">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" family="MYSQL" exact-version="0.0" />
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
       <secret-storage>master_key</secret-storage>
       <first-sync>true</first-sync>
       <user-name>root</user-name>

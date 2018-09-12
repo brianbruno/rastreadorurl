@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #524948;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="templates.splash.SplashController">
+   <children>
+      <Pane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Text fill="#70f8ba" fontSmoothingType="LCD" layoutX="18.0" layoutY="212.0" stroke="#57467b" strokeType="OUTSIDE" strokeWidth="0.0" text="Rastreador URL" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Bold" size="49.0" />
+               </font>
+            </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d8cbc7" height="25.0" layoutY="375.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="400.0" />
+            <Label fx:id="lblFooter" layoutX="4.0" layoutY="378.0" textFill="#19231a" />
+         </children>
+      </Pane>
+   </children>
+</StackPane>

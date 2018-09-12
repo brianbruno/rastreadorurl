@@ -33,9 +33,19 @@ public class ConnectionController {
             System.out.println("Conexão concluída com sucesso!");
             resultado = true;
         } catch (SQLException ex) {
+            ScreenService.showErrorMessage(ex.getMessage());
             ex.printStackTrace();
         }
         return resultado;
+    }
+
+    public void desconectar() {
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            ScreenService.showErrorMessage(ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     public void insertURL(Request request) {
