@@ -18,7 +18,7 @@ public class Bot extends Thread {
 
     public Bot(RequestManagement rm) {
         bot_id = bots++;
-        System.out.println("Iniciando bot " + bot_id);
+        LogService.addLogInfo("Iniciando bot " + bot_id);
         this.rm = rm;
     }
 
@@ -47,7 +47,7 @@ public class Bot extends Thread {
                 }
             } else {
                 try {
-                    System.out.println("Bot " + bot_id + " ocioso.");
+                    LogService.addLogInfo("Bot " + bot_id + " ocioso.");
                     Thread.sleep(30000);
                     rm.setBotOcioso(true);
                 } catch (Exception err) {

@@ -9,16 +9,13 @@ import java.io.*;
 
 public class ConnectionParameters {
 
-    private String arquivo = "rastreador.config";
-    private int tentativas = 0;
+    private static String arquivo = "rastreador.config";
+    private static int tentativas = 0;
 
     public ConnectionController startConnection() {
         String dburl = getParameter("DBURL");
         String username = getParameter("USERNAME");
         String password = getParameter("PASSWORD");
-        String logpath = getParameter("LOGPATH");
-
-        System.setProperty("file.name", logpath);
 
         ConnectionController cc = null;
 
@@ -33,7 +30,7 @@ public class ConnectionParameters {
         return cc;
     }
 
-    public String getParameter  (String parametro) {
+    public static String getParameter (String parametro) {
 
         FileInputStream entrada = null;
         InputStreamReader leitor = null;
@@ -76,7 +73,7 @@ public class ConnectionParameters {
         return resultado;
     }
 
-    private void exibirMensagemDiretorioArquivo() {
+    private static void exibirMensagemDiretorioArquivo() {
 
         if (tentativas < 3) {
             TextInputDialog dialogoNome = new TextInputDialog();
@@ -95,7 +92,7 @@ public class ConnectionParameters {
         }
     }
 
-    public void finalizarArquivos(FileInputStream entrada, InputStreamReader leitor, BufferedReader buffer_entrada) {
+    public static void finalizarArquivos(FileInputStream entrada, InputStreamReader leitor, BufferedReader buffer_entrada) {
         try {
             if (entrada != null)
                 entrada.close();
@@ -109,7 +106,7 @@ public class ConnectionParameters {
         }
     }
 
-    public void finalizarArquivos(FileOutputStream saida, OutputStreamWriter gravador, BufferedWriter buffer_saida) {
+    public static void finalizarArquivos(FileOutputStream saida, OutputStreamWriter gravador, BufferedWriter buffer_saida) {
         try {
             if (saida != null) {
                 saida.close();

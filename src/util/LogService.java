@@ -17,5 +17,10 @@ public class LogService {
         logger.error(mensagem);
     }
 
+    public synchronized static void addLogFatal(String mensagem) {
+        logger.fatal(mensagem);
+        System.exit(0);
+    }
+
 
 }

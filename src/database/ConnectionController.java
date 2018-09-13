@@ -6,6 +6,7 @@ import core.RequestManagement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
+import util.LogService;
 import util.ScreenService;
 
 import java.sql.*;
@@ -33,11 +34,11 @@ public class ConnectionController {
         boolean resultado = false;
         try {
             conn = DriverManager.getConnection(dbURL, username, password);
-            System.out.println("Conexão concluída com sucesso!");
+            LogService.addLogInfo("Conexão concluída com sucesso!");
             resultado = true;
         } catch (SQLException ex) {
             ScreenService.showStackTrace(ex);
-            logger.fatal(ex.getMessage());
+            LogService.addLogFatal(ex.getMessage());
             ex.printStackTrace();
         }
         return resultado;

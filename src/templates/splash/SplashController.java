@@ -13,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import util.LogService;
+import util.ScreenService;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,14 +46,18 @@ public class SplashController implements Initializable {
 
                         Parent root = null;
                         try {
+                            LogService.addLogInfo("Tentando conexão com o banco de dados");
                             lblFooter.setText("Conectando ao banco de dados...");
                             root = FXMLLoader.load(getClass().getResource("/sample/sample.fxml"));
+                            LogService.addLogInfo("Conexão realizada!");
                         } catch (Exception ex) {
-                            System.err.println(ex.getMessage());
+                            LogService.addLogError(ex.getMessage());
+                            ScreenService.showStackTrace(ex);
                         }
 
                         Stage stage = new Stage();
 
+                        LogService.addLogInfo("Ajustando detalhes de tela");
                         lblFooter.setText("Ajustando os detalhes...");
                         stage.setTitle("Rastreador de URL");
                         stage.setScene(new Scene(root));
@@ -74,11 +80,14 @@ public class SplashController implements Initializable {
 
                         stage.show();
                         rootPane.getScene().getWindow().hide();
+
+                        LogService.addLogInfo("Tela carregada com sucesso.");
                     }
                 });
 
             } catch (Exception e) {
-                System.err.println("Erro.");
+                LogService.addLogError(e.getMessage());
+                ScreenService.showStackTrace(e);
             }
         }
     }

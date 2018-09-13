@@ -118,18 +118,22 @@ public class Controller implements Initializable {
 
     @FXML
     private void pararRastreamento(ActionEvent event) {
-        rm.setRodar(false);
-        labelStatus.setText("Parando o bot...");
-        for (int i = 0; i < THREADS; i++) {
-            try {
-                bots.get(i).join();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (bots.size() > 0) {
+            rm.setRodar(false);
+            labelStatus.setText("Parando o bot...");
+            for (int i = 0; i < THREADS; i++) {
+                try {
+                    bots.get(i).join();
+                } catch (Exception e) {
+                    ScreenService.showStackTrace(e);
+                    LogService.addLogFatal(e.getMessage());
+                    e.printStackTrace();
+                }
             }
+            Bot.setBots(0);
+            labelStatus.setText("O bot está parado!");
+            LogService.addLogInfo("Bot finalizado!");
         }
-        Bot.setBots(0);
-        labelStatus.setText("O bot está parado!");
-        LogService.addLogInfo("Bot finalizado!");
     }
 
     @FXML
