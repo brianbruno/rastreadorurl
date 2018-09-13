@@ -1,11 +1,13 @@
 package arquivo;
 
 import database.ConnectionController;
+import exception.ParametroNaoEncontrado;
 import javafx.scene.control.TextInputDialog;
+import util.ScreenService;
 
 import java.io.*;
 
-public class ConnectionParameters extends ArquivoUtil{
+public class ConnectionParameters {
 
     private String arquivo = "rastreador.config";
     private int tentativas = 0;
@@ -14,6 +16,9 @@ public class ConnectionParameters extends ArquivoUtil{
         String dburl = getParameter("DBURL");
         String username = getParameter("USERNAME");
         String password = getParameter("PASSWORD");
+        String logpath = getParameter("LOGPATH");
+
+        System.setProperty("file.name", logpath);
 
         ConnectionController cc = null;
 
@@ -53,11 +58,17 @@ public class ConnectionParameters extends ArquivoUtil{
                 }
             }
 
+            if (resultado == null) {
+                throw new ParametroNaoEncontrado(parametro);
+            }
+
+        } catch (ParametroNaoEncontrado pnr) {
+            ScreenService.showStackTrace(pnr);
         } catch (FileNotFoundException exception) {
             exibirMensagemDiretorioArquivo();
             resultado = getParameter(parametro);
         } catch (Exception e) {
-            System.err.println("Erro ao buscar o parametro: " + parametro);
+            ScreenService.showStackTrace(e);
         }  finally {
             finalizarArquivos(entrada, leitor, buffer_entrada);
         }
@@ -77,7 +88,40 @@ public class ConnectionParameters extends ArquivoUtil{
             // se o usuário fornecer um valor, assignamos ao nome
             dialogoNome.showAndWait().ifPresent(v -> arquivo = v);
 
+            if(!dialogoNome.showAndWait().isPresent())
+                System.exit(0);
+
             tentativas++;
+        }
+    }
+
+    public void finalizarArquivos(FileInputStream entrada, InputStreamReader leitor, BufferedReader buffer_entrada) {
+        try {
+            if (entrada != null)
+                entrada.close();
+            if (leitor != null)
+                leitor.close();
+            if (buffer_entrada != null)
+                buffer_entrada.close();
+
+        } catch (Exception ex) {
+            System.err.println("Erro ao finalizar os arquivos.");
+        }
+    }
+
+    public void finalizarArquivos(FileOutputStream saida, OutputStreamWriter gravador, BufferedWriter buffer_saida) {
+        try {
+            if (saida != null) {
+                saida.close();
+            }
+            if (gravador != null) {
+                gravador.close();
+            }
+            if (buffer_saida != null) {
+                buffer_saida.close();
+            }
+        } catch (Exception ex) {
+            System.err.println("Erro ao finalizar os arquivos.");
         }
     }
 

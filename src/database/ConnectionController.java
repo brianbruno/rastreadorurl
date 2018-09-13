@@ -1,11 +1,11 @@
 package database;
 
-import arquivo.ArquivoRequest;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import componentes.Request;
 import core.RequestManagement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.log4j.Logger;
 import util.ScreenService;
 
 import java.sql.*;
@@ -13,9 +13,12 @@ import java.util.ArrayList;
 
 public class ConnectionController {
 
-    private String dbURL = "jdbc:mysql://162.221.187.66:3306/brianpl1_rastreador";
-    private String username = "brianpl1";
-    private String password = "7Kj853bpLj";
+    private String dbURL;
+    private String username;
+    private String password;
+
+    private final static Logger logger = Logger.getLogger(ConnectionController.class);
+
     private static final int INSERT_SIZE = 100;
     private static Connection conn;
     private static ArrayList<Request> urls = new ArrayList<>();
@@ -33,7 +36,8 @@ public class ConnectionController {
             System.out.println("Conexão concluída com sucesso!");
             resultado = true;
         } catch (SQLException ex) {
-            ScreenService.showErrorMessage(ex.getMessage());
+            ScreenService.showStackTrace(ex);
+            logger.fatal(ex.getMessage());
             ex.printStackTrace();
         }
         return resultado;
@@ -43,7 +47,8 @@ public class ConnectionController {
         try {
             conn.close();
         } catch (SQLException ex) {
-            ScreenService.showErrorMessage(ex.getMessage());
+            ScreenService.showStackTrace(ex);
+            logger.fatal(ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -58,10 +63,10 @@ public class ConnectionController {
             statement.executeUpdate();
 
         } catch (MySQLIntegrityConstraintViolationException ex) {
-            String log = "Registro duplicado: " + request.getLink() + ArquivoRequest.SEPARATOR;
-            RequestManagement.gravarLog(log);
+            logger.warn("Registro duplicado: " + request.getLink());
         } catch (SQLException ex) {
-            ScreenService.showErrorMessage(ex.getMessage());
+            ScreenService.showStackTrace(ex);
+            logger.error(ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -75,7 +80,7 @@ public class ConnectionController {
         }
     }
 
-    public synchronized void salvarURLS() {
+    private synchronized void salvarURLS() {
         int tamanho = urls.size();
 //        System.out.println("Salvando URLS! " + urls.size());
         for (int i = 0; i < tamanho; i++) {
@@ -90,12 +95,12 @@ public class ConnectionController {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            ScreenService.showErrorMessage(ex.getMessage());
-            System.err.println("Erro ao adicionar registro como visitado.");
+            ScreenService.showStackTrace(ex);
+            logger.error("Erro ao adicionar registro como visitado. " + ex.getMessage());
         }
     }
 
-    public long getIdUrl(String url) {
+    private long getIdUrl(String url) {
         long idUrl = 0;
 
         try {
@@ -120,7 +125,8 @@ public class ConnectionController {
             }
 
         } catch (SQLException ex) {
-            ScreenService.showErrorMessage(ex.getMessage());
+            logger.fatal(ex.getMessage());
+            ScreenService.showStackTrace(ex);
             ex.printStackTrace();
         }
 
@@ -144,6 +150,7 @@ public class ConnectionController {
             }
 
         } catch (SQLException ex) {
+            logger.error(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -155,7 +162,7 @@ public class ConnectionController {
         return requests;
     }
 
-    public ObservableList<Request> getArvore(PreparedStatement statement) {
+    private ObservableList<Request> getArvore(PreparedStatement statement) {
 
         ObservableList<Request> requests = FXCollections.observableArrayList();
 
@@ -223,6 +230,7 @@ public class ConnectionController {
             statement.setString(1, codigo);
             requests = getArvore(statement);
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
             ex.printStackTrace();
         }
         return requests;

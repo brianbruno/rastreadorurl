@@ -1,33 +1,26 @@
 package core;
 
-import arquivo.ArquivoRequest;
-import arquivo.ArquivoAncestrais;
 import arquivo.ConnectionParameters;
-import componentes.Ancestral;
 import componentes.Request;
 import database.ConnectionController;
-import javafx.collections.ObservableList;
+import util.LogService;
 
 import java.util.ArrayList;
 
 public class RequestManagement {
 
     private ArrayList<Request> links;
-    private ArrayList<Request> saveLinks;
     private static boolean rodar = true;
     private boolean botOcioso = false;
-    private static ArquivoManagement am = new ArquivoManagement();
     private ConnectionController conn;
 
     public RequestManagement() {
         conn = new ConnectionParameters().startConnection();
-        this.saveLinks = new ArrayList<>();
         this.links = new ArrayList<>();
     }
 
     public RequestManagement(ConnectionController conn) {
         this.conn = conn;
-        this.saveLinks = new ArrayList<>();
         this.links = new ArrayList<>();
     }
 
@@ -38,7 +31,7 @@ public class RequestManagement {
             if (links.size() == 0 || botOcioso) {
                 this.links = conn.getURLS();
                 if (botOcioso && links.size() == 0) {
-                    System.out.println("PERIGO! Links esgotados.");
+                    LogService.addLogError("PERIGO! Links esgotados.");
                 }
                 if (botOcioso)
                     setBotOcioso(false);
@@ -63,12 +56,7 @@ public class RequestManagement {
     }
 
     public void setRodar(boolean rodar) {
-        this.rodar = rodar;
-    }
-
-
-    public static synchronized void gravarLog(String log){
-        am.gravarLog(log);
+        RequestManagement.rodar = rodar;
     }
 
     public void novoUrl (String url, String origem) {
@@ -76,10 +64,6 @@ public class RequestManagement {
         rq.setLink(url);
         rq.setOrigem(origem);
         conn.addURL(rq);
-    }
-
-    public void salvarUrls() {
-        conn.salvarURLS();
     }
 
     public void setVisitado(Request rq) {

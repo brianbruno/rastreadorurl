@@ -1,14 +1,10 @@
 package sample;
 
 import arquivo.ConnectionParameters;
-import componentes.Ancestral;
 import componentes.Request;
-import core.ArquivoManagement;
 import core.Bot;
 import core.RequestManagement;
 import database.ConnectionController;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,13 +14,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import util.LogService;
 import util.ScreenService;
 
-import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -114,6 +108,7 @@ public class Controller implements Initializable {
     private void iniciarRastreamento(ActionEvent event) {
         bots = new ArrayList<>();
         rm.setRodar(true);
+        LogService.addLogInfo("Bot iniciado!");
         labelStatus.setText("O bot está buscando...");
         for (int i = 0; i < THREADS; i++) {
             bots.add(new Bot(rm));
@@ -134,6 +129,7 @@ public class Controller implements Initializable {
         }
         Bot.setBots(0);
         labelStatus.setText("O bot está parado!");
+        LogService.addLogInfo("Bot finalizado!");
     }
 
     @FXML

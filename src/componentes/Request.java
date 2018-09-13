@@ -1,13 +1,5 @@
 package componentes;
 
-import arquivo.ArquivoAncestrais;
-import arquivo.ArquivoUtil;
-import core.RequestManagement;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.util.Random;
-
 public class Request {
 
     private String codigo;
@@ -16,10 +8,6 @@ public class Request {
     private String visitado;
     private String nome;
     private Integer filhos;
-
-    public Request (String linha) {
-        montarObjeto(linha);
-    }
 
     public Request(Long codigo, String link, Long origem) {
         this.codigo = String.valueOf(codigo);
@@ -77,51 +65,6 @@ public class Request {
             resultado = true;
         }
         return resultado;
-    }
-
-    private void montarObjeto (String linha) {
-        Request request = null;
-
-        try {
-            if(linha != null && !linha.equals("")) {
-                JSONParser parser = new JSONParser();
-                Object obj = parser.parse(linha);
-                JSONObject jsonObject = (JSONObject) obj;
-                String cod = (String) jsonObject.get("codigo");
-                String nome = (String) jsonObject.get("nome");
-                String link = (String) jsonObject.get("link");
-                String visitado = (String) jsonObject.get("visitado");
-                String origem = (String) jsonObject.get("origem");
-
-                setCodigo(cod);
-                setNome(nome);
-                setLink(link);
-                setOrigem(origem);
-                setVisitado(visitado);
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao montar objeto.");
-            e.printStackTrace();
-        }
-    }
-
-    public String toJson () {
-        JSONObject novoDado = new JSONObject();
-        String novaString;
-
-        if (getCodigo() == null) {
-            System.err.println("PERIGO! Código: null Link: " + getLink());
-        }
-
-        novoDado.put("codigo", getCodigo());
-        novoDado.put("nome", getNome());
-        novoDado.put("link", getLink());
-        novoDado.put("visitado", getVisitado());
-        novoDado.put("origem", getOrigem());
-
-        novaString = novoDado.toJSONString() + ArquivoUtil.SEPARATOR;
-
-        return novaString;
     }
 
     public Integer getFilhos() {

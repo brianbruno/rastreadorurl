@@ -1,12 +1,10 @@
 package core;
 
-import arquivo.ArquivoRequest;
 import componentes.Request;
+import util.LogService;
 
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Bot extends Thread {
@@ -28,9 +26,9 @@ public class Bot extends Thread {
         navegar();
     }
 
-    public void navegar() {
+    private void navegar() {
 
-        while (rm.isRodar()) {
+        while (RequestManagement.isRodar()) {
             if ((url = rm.getUrl()) != null) {
                 ArrayList<Integer> indexs;
                 try {
@@ -44,9 +42,8 @@ public class Bot extends Thread {
                     indexs = verificarConteudo();
                     adicionarUrls(indexs);
                 } catch (Exception ex) {
-                    String log = "Erro no bot " + bot_id + "! " + ex.getMessage() + ArquivoRequest.SEPARATOR;
-                    log += "Link: " + url.getLink() + ArquivoRequest.SEPARATOR;
-                    RequestManagement.gravarLog(log);
+                    String log = "Erro no bot " + bot_id + "! " + ex.getMessage() + " - Link: " + url.getLink();
+                    LogService.addLogError(log);
                 }
             } else {
                 try {
@@ -54,8 +51,8 @@ public class Bot extends Thread {
                     Thread.sleep(30000);
                     rm.setBotOcioso(true);
                 } catch (Exception err) {
-                    RequestManagement.gravarLog("Erro no bot " + bot_id + "! " + err.getMessage());
-                    RequestManagement.gravarLog("Erro ao colocar Thread para dormir!");
+                    LogService.addLogError("Erro no bot " + bot_id + "! " + err.getMessage());
+                    LogService.addLogError("Erro ao colocar Thread para dormir!");
                 }
             }
         }
@@ -118,7 +115,4 @@ public class Bot extends Thread {
         Bot.bots = bots;
     }
 
-    public RequestManagement getRequestManagement() {
-        return this.rm;
-    }
 }
