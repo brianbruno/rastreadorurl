@@ -2,10 +2,8 @@ package database;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import componentes.Request;
-import core.RequestManagement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.log4j.Logger;
 import util.LogService;
 import util.ScreenService;
 
@@ -18,11 +16,7 @@ public class ConnectionController {
     private String username;
     private String password;
 
-    private final static Logger logger = Logger.getLogger(ConnectionController.class);
-
-    private static final int INSERT_SIZE = 100;
     private static Connection conn;
-    private static ArrayList<Request> urls = new ArrayList<>();
 
     public ConnectionController(String dburl, String username, String password) {
         this.dbURL = dburl;
@@ -38,8 +32,6 @@ public class ConnectionController {
             resultado = true;
         } catch (SQLException ex) {
             ScreenService.showStackTrace(ex);
-            LogService.addLogFatal(ex.getMessage());
-            ex.printStackTrace();
         }
         return resultado;
     }
@@ -49,13 +41,13 @@ public class ConnectionController {
             conn.close();
         } catch (SQLException ex) {
             ScreenService.showStackTrace(ex);
-            logger.fatal(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
-    public void insertURL(Request request) {
+    public synchronized void insertURL(Request request) {
         try {
+            beginTrasaction();
+
             String sql = "INSERT INTO url (URL, ID_ORIGEM) VALUES (?, ?)";
 
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -63,41 +55,31 @@ public class ConnectionController {
             statement.setString(2, request.getOrigem());
             statement.executeUpdate();
 
+            commit();
         } catch (MySQLIntegrityConstraintViolationException ex) {
-            logger.warn("Registro duplicado: " + request.getLink());
+            LogService.addLogWarn("Registro duplicado: " + request.getLink());
         } catch (SQLException ex) {
+            rollback();
             ScreenService.showStackTrace(ex);
-            logger.error(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
-    public synchronized void addURL(Request request) {
-        if (!urls.contains(request))
-            urls.add(request);
-
-        if (urls.size() >= INSERT_SIZE || !RequestManagement.isRodar()) {
-            salvarURLS();
-        }
-    }
-
-    private synchronized void salvarURLS() {
-        int tamanho = urls.size();
-//        System.out.println("Salvando URLS! " + urls.size());
-        for (int i = 0; i < tamanho; i++) {
-            insertURL(urls.remove(i));
-        }
+    public void addURL(Request request) {
+        insertURL(request);
     }
 
     public void addVisita(Request request) {
         try {
+            beginTrasaction();
+
             PreparedStatement statement = conn.prepareStatement("INSERT INTO visitas (ID_URL) VALUES (?)");
             statement.setString(1, request.getCodigo());
             statement.executeUpdate();
 
+            commit();
         } catch (SQLException ex) {
+            rollback();
             ScreenService.showStackTrace(ex);
-            logger.error("Erro ao adicionar registro como visitado. " + ex.getMessage());
         }
     }
 
@@ -114,9 +96,11 @@ public class ConnectionController {
             if (result.next()) {
                 idUrl = result.getLong("ID");
             } else {
+                beginTrasaction();
                 statement = conn.prepareStatement("INSERT INTO links (URL) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, url);
                 statement.executeUpdate();
+                commit();
 
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -126,9 +110,8 @@ public class ConnectionController {
             }
 
         } catch (SQLException ex) {
-            logger.fatal(ex.getMessage());
+            rollback();
             ScreenService.showStackTrace(ex);
-            ex.printStackTrace();
         }
 
         return idUrl;
@@ -151,14 +134,12 @@ public class ConnectionController {
             }
 
         } catch (SQLException ex) {
-            logger.error(ex.getMessage());
+            LogService.addLogError(ex.getMessage());
             ex.printStackTrace();
         }
 
-        if (requests.size() == 0 && urls.size() > 0) {
-            System.out.println("Oh! Oh! Não recuperei nenhum dado do servidor.");
-            salvarURLS();
-            requests = getURLS();
+        if (requests.size() == 0) {
+            LogService.addLogError("Oh! Oh! Não recuperei nenhum dado do servidor.");
         }
         return requests;
     }
@@ -231,10 +212,33 @@ public class ConnectionController {
             statement.setString(1, codigo);
             requests = getArvore(statement);
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            LogService.addLogError(ex.getMessage());
             ex.printStackTrace();
         }
         return requests;
     }
 
+    private void beginTrasaction() {
+        try {
+            conn.setAutoCommit(false);
+        } catch (Exception e) {
+            ScreenService.showStackTrace(e);
+        }
+    }
+
+    private void commit() {
+        try {
+            conn.commit();
+        } catch (Exception e) {
+            ScreenService.showStackTrace(e);
+        }
+    }
+
+    private void rollback() {
+        try {
+        conn.rollback();
+        } catch (Exception e) {
+            ScreenService.showStackTrace(e);
+        }
+    }
 }

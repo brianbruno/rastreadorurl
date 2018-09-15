@@ -27,6 +27,9 @@ public class ScreenService {
     }
 
     public static void showStackTrace(Exception ex) {
+
+        LogService.addLogFatal(ex.getMessage());
+
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erro fatal");
         alert.setHeaderText("Ops! Um erro inesperado ocorreu.");

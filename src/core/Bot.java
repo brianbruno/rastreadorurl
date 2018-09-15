@@ -14,7 +14,7 @@ public class Bot extends Thread {
     private static int bots = 1;
     private int bot_id;
     private Request url;
-    private List<String> palavrasBloqueadas = Arrays.asList("buaa.edu.cn", "apache.org", "Banana");
+    private List<String> palavrasBloqueadas = Arrays.asList("buaa.edu.cn", "apache.org", "Banana", ".linkedin", "schema");
 
     public Bot(RequestManagement rm) {
         bot_id = bots++;

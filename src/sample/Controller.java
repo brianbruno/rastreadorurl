@@ -42,15 +42,13 @@ public class Controller implements Initializable {
     public Button backButton;
     @FXML
     public Label labelStatus;
-    String url_add = null;
-    public static boolean LOG_ATIVO = false;
+    private String url_add = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         ConnectionParameters connectionParameters = new ConnectionParameters();
         conn = connectionParameters.startConnection();
-
         if (conn == null) {
             ScreenService.showErrorMessage("Dados de conexão incorretos");
             System.exit(0);
@@ -138,7 +136,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void closeButtonAction(){
-//        rm.desconectar();
+        rm.desconectar();
         // get a handle to the stage
         Stage stage = (Stage) closeButton.getScene().getWindow();
         // do what you have to do
